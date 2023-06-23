@@ -77,13 +77,13 @@ RUN unzip 2021.zip
 WORKDIR /tmp
 USER helioviewer
 COPY --chown=helioviewer:helioviewer setup_files /home/helioviewer/setup_files
-RUN curl --output api.zip -s -X GET https://codeload.github.com/Helioviewer-Project/api/zip/refs/heads/master && \
+RUN curl --output api.zip -s -X GET https://codeload.github.com/dgarciabriseno/api/zip/refs/heads/gong-halpha && \
     unzip -q api.zip &&                                                                                          \
-    python3 -m pip install --user -r /tmp/api-master/docs/src/requirements.txt &&                                \
-    python3 -m pip install --user -r /tmp/api-master/scripts/availability_feed/requirements.txt &&               \
+    python3 -m pip install --user -r /tmp/api-gong-halpha/docs/src/requirements.txt &&                                \
+    python3 -m pip install --user -r /tmp/api-gong-halpha/scripts/availability_feed/requirements.txt &&               \
     cd /home/helioviewer/setup_files/scripts &&                                                                  \
     sudo mysqld --user=mysql -D && ./headless_setup.sh &&                                                        \
-    rm -rf /tmp/api.zip /tmp/api-master &&                                                                       \
+    rm -rf /tmp/api.zip /tmp/api-gong-halpha &&                                                                       \
     sudo pkill mysqld
 
 # Set up server configuration
