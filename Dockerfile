@@ -5,7 +5,7 @@ WORKDIR ${INSTALL_PATH}
 RUN dnf update -y
 RUN dnf --enablerepo=ol8_codeready_builder install -y oniguruma-devel xz gcc make readline-devel \
                             libxml2-devel httpd-devel httpd autoconf libcurl-devel openssl-devel \
-                            tcsh redis cronie unzip vim ant python38                             \
+                            tcsh redis cronie unzip vim ant python38 openjpeg2                   \
                             https://repo.mysql.com/mysql80-community-release-el8.rpm             \
                             python38-pip python38-devel sudo expect libpng-devel
 
