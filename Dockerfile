@@ -35,7 +35,6 @@ RUN curl -s --output php8.tar.xz -X GET https://www.php.net/distributions/php-$P
     make -j$(nproc) &&                                                                             \
     make install &&                                                                                \
     cd ${INSTALL_PATH} &&                                                                          \
-    rm -rf php-$PHP_VER &&                                                                         \
     rm -rf php8.tar.xz
 
 # Echo all necessary files here
