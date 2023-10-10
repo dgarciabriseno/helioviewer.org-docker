@@ -2,6 +2,7 @@ FROM oraclelinux:8
 
 ENV GITHUB_USERNAME=Helioviewer-Project
 ENV GITHUB_BRANCH=master
+ENV PHP_VER=8.2.11
 
 ENV INSTALL_PATH=/root/.install
 # Group all heliovewer dependencies into one DNF download
@@ -9,7 +10,7 @@ WORKDIR ${INSTALL_PATH}
 RUN dnf update -y
 RUN dnf --enablerepo=ol8_codeready_builder install -y oniguruma-devel xz gcc make readline-devel \
                             libxml2-devel httpd-devel httpd autoconf libcurl-devel openssl-devel \
-                            tcsh redis cronie unzip vim ant python38                             \
+                            tcsh redis cronie unzip vim ant python38 php-fpm mod_fcgid           \
                             https://repo.mysql.com/mysql80-community-release-el8.rpm             \
                             python38-pip python38-devel sudo expect libpng-devel
 
@@ -18,13 +19,14 @@ RUN dnf config-manager --disable mysql* && dnf config-manager --enable mysql80-c
 RUN dnf install -y mysql-community-server mysql-community-devel
 
 # Download, Compile, and Install PHP8
-RUN curl -s --output php8.tar.xz -X GET https://www.php.net/distributions/php-8.2.3.tar.xz &&      \
+RUN curl -s --output php8.tar.xz -X GET https://www.php.net/distributions/php-$PHP_VER.tar.xz &&   \
     tar xf php8.tar.xz &&                                                                          \
-    cd ${INSTALL_PATH}/php-8.2.3 &&                                                                \
+    cd ${INSTALL_PATH}/php-$PHP_VER &&                                                             \
     mkdir /etc/php.d && cp php.ini-development /etc/php.ini &&                                     \
-    ./configure --with-apxs2=/usr/bin/apxs --with-curl --enable-pcntl --with-openssl --with-pear   \
+    cp php.ini-production /etc/php.ini-production &&                                               \
+    ./configure --with-curl --enable-pcntl --with-openssl --with-pear                              \
                 --with-mysqli --with-readline --enable-phpdbg --without-iconv --enable-sockets     \
-                --enable-mbstring --enable-bcmath                                                  \
+                --enable-mbstring --enable-bcmath --enable-fpm                                     \
                 --without-sqlite3 --without-pdo-sqlite --with-config-file-path=/etc                \
                 --with-config-file-scan-dir=/etc/php.d &&                                          \
     echo -------------------------------- &&                                                       \
@@ -33,7 +35,7 @@ RUN curl -s --output php8.tar.xz -X GET https://www.php.net/distributions/php-8.
     make -j$(nproc) &&                                                                             \
     make install &&                                                                                \
     cd ${INSTALL_PATH} &&                                                                          \
-    rm -rf php-8.2.3 &&                                                                            \
+    rm -rf php-$PHP_VER &&                                                                         \
     rm -rf php8.tar.xz
 
 # Echo all necessary files here
