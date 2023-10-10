@@ -10,7 +10,7 @@ WORKDIR ${INSTALL_PATH}
 RUN dnf update -y
 RUN dnf --enablerepo=ol8_codeready_builder install -y oniguruma-devel xz gcc make readline-devel \
                             libxml2-devel httpd-devel httpd autoconf libcurl-devel openssl-devel \
-                            tcsh redis cronie unzip vim ant python38 php-fpm mod_fcgid           \
+                            tcsh redis cronie unzip vim ant python38 mod_fcgid                   \
                             https://repo.mysql.com/mysql80-community-release-el8.rpm             \
                             python38-pip python38-devel sudo expect libpng-devel
 
@@ -40,8 +40,7 @@ RUN curl -s --output php8.tar.xz -X GET https://www.php.net/distributions/php-$P
 
 # Echo all necessary files here
 COPY setup_files/container_config/99-xdebug.ini /etc/php.d/99-xdebug.ini
-RUN echo $'<FilesMatch \.php$>\nSetHandler application/x-httpd-php\n</FilesMatch>' > /etc/httpd/conf.modules.d/20-php.conf && \
-    echo "DirectoryIndex index.html index.php" > /etc/httpd/conf.modules.d/30-indexes.conf &&                                 \
+RUN echo "DirectoryIndex index.html index.php" > /etc/httpd/conf.modules.d/30-indexes.conf &&                                 \
     echo "extension=redis.so" > /etc/php.d/99-redis.ini &&                                                                    \
     echo "extension=imagick.so" > /etc/php.d/99-imagick.ini &&                                                                \
     echo "helioviewer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers &&                                                              \
