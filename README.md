@@ -60,3 +60,17 @@ There are 5 primary containers that make up this environment
 There is also a "CLI" container, which doesn't provide any direct service, but is useful for development purposes like downloading test data or accessing application data.
 
 If any of the primary containers aren't running properly, this could be the source of some issues.
+
+# Production Compose Files
+
+`compose.prod.yaml` will run a fully self-contained version of helioviewer.
+This set of containers will initialize the database on the first run and begin downloading data within container volumes.
+
+`compose.dropin.yaml` runs a hybrid host/container environment.
+This assumes there is existing image data and a running database on the host.
+You must create your own volumes which map container volumes to the existing data on the host.
+You must also configure the database to allow connections from within the container.
+This is done by binding to the host IP in the container network and creating
+a new user account which can be accessed from multiple IP addresses since each container has its own IP.
+You will also have to implement some proxy to forward https requests to the running containers,
+this can be done with apache's `ProxyPass` directive.
