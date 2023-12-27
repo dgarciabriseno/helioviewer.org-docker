@@ -62,6 +62,7 @@ services:
     secrets:
       - api_config
       - api_private
+      - api_settings
   web:
     image: dgarciabriseno/helioviewer-web:${TAG}
     build:

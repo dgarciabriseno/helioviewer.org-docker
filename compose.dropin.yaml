@@ -29,6 +29,7 @@ services:
     secrets:
       - api_config
       - api_private
+      - api_settings
   web:
     image: dgarciabriseno/helioviewer-web:${TAG}
     build:
@@ -95,8 +96,6 @@ services:
       - api_settings
 
 volumes:
-  db_data:
-    external: true
   jp2_volume:
     external: true
   cache:

@@ -1,5 +1,6 @@
 #!/bin/bash --login
 set -e
+cp /run/secrets/api_settings /var/www/api.helioviewer.org/install/settings/settings.cfg
 cp /run/secrets/api_config /var/www/api.helioviewer.org/settings/Config.ini
 cp /run/secrets/api_private /var/www/api.helioviewer.org/settings/Private.php
 
@@ -13,9 +14,8 @@ chmod 777 /var/www/helioviewer.org/cache/tiles
 mamba activate helioviewer
 /var/www/api.helioviewer.org/vendor/bin/start_hgs2hpc
 
-pushd /var/www/api.helioviewer.org/install
-pip install -r test_requirements.txt
-popd
+mamba activate hvstats
+bash --login /root/hvstats.sh &
 
 chmod 777 /var/www/api.helioviewer.org/log
 

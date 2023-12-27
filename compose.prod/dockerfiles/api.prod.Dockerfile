@@ -10,7 +10,6 @@ ENV PHP_CONF_DIR=/usr/local/etc/php
 ENV APACHE_DOCUMENT_ROOT /var/www/api.helioviewer.org/docroot
 COPY ./compose/scripts/install_composer.sh /root
 COPY api/install/kakadu/Kakadu_v6_4_1-00781N_Linux-64-bit-Compiled.tar.gz kdu.tar.gz
-COPY ./compose.prod/scripts/api.prod.startup.sh /root
 COPY ./compose.prod/api.apache.conf /etc/apache2/sites-available/000-default.conf
 RUN apt update                                                                                                                        \
  && apt install -y imagemagick git unzip libmariadb-dev                                                                               \
@@ -39,10 +38,13 @@ RUN apt update                                                                  
  && rm miniforge.sh                                                                                                                   \
  && export PATH=$PATH:/tmp/miniforge3/bin                                                                                             \
  && mamba create -n helioviewer -y python=$PYTHON_VERSION                                                                             \
+ && mamba create -n hvstats -y python=3.8.17                                                                                          \
  && mamba init                                                                                                                        \
  && rm $PHP_CONF_DIR/php.ini-development                                                                                              \
  && mv $PHP_CONF_DIR/php.ini-production $PHP_CONF_DIR/php.ini                                                                         \
  && a2enmod rewrite
 
+COPY ./compose.prod/scripts/hvstats.sh /root
+COPY ./compose.prod/scripts/api.prod.startup.sh /root
 WORKDIR /var/www/api.helioviewer.org
 ENTRYPOINT ["bash", "--login", "/root/api.prod.startup.sh"]
