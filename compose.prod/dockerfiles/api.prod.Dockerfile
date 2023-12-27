@@ -39,6 +39,12 @@ RUN apt update                                                                  
  && export PATH=$PATH:/tmp/miniforge3/bin                                                                                             \
  && mamba create -n helioviewer -y python=$PYTHON_VERSION                                                                             \
  && mamba create -n hvstats -y python=3.8.17                                                                                          \
+ && cd /var/www/api.helioviewer.org/docs/src                                                                                          \
+ && mamba create -n docs -y python=$PYTHON_VERSION                                                                                    \
+ && /tmp/miniforge3/envs/docs/bin/python -m pip install -r requirements.txt                                                           \
+ && mamba run -n docs make docs                                                                                                       \
+ && mamba env remove -n docs                                                                                                          \
+ && mamba clean -y -a                                                                                                                 \
  && mamba init                                                                                                                        \
  && rm $PHP_CONF_DIR/php.ini-development                                                                                              \
  && mv $PHP_CONF_DIR/php.ini-production $PHP_CONF_DIR/php.ini                                                                         \
