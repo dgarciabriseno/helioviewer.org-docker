@@ -2,7 +2,7 @@ name: Build check
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dropin-container" ]
   workflow_dispatch:
 
 jobs:
