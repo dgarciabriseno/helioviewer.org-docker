@@ -3,6 +3,7 @@ name: Build check
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build-prod-containers:
