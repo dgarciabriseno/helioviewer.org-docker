@@ -13,10 +13,14 @@ services:
       retries: 3
     secrets:
       - mariadb-password
+    ports:
+      - 3306:3306
   # In memory cache for helioviewer
   redis:
     image: redis:latest
     restart: always
+    ports:
+      - 6379:6379
   # Database initializer (creates tables + helioviewer user account)
   database_setup:
     image: dgarciabriseno/helioviewer-db-init:${TAG}
