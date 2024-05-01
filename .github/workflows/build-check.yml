@@ -6,12 +6,22 @@ on:
 
 jobs:
   build-dev:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+
+      - name: Install Docker
+        run: |
+          curl -X GET https://desktop.docker.com/mac/main/arm64/Docker.dmg --output Docker.dmg
+          hdiutil attach Docker.dmg
+          /Volumes/Docker/Docker.app/Contents/MacOS/install
+          hdiutil detach /Volumes/Docker
 
       - name: Build containers
         run: docker compose build
