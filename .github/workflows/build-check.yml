@@ -6,12 +6,21 @@ on:
 
 jobs:
   build-dev:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+
+      - name: Install Docker
+        run: |
+          curl -X GET https://desktop.docker.com/mac/main/arm64/Docker.dmg --output Docker.dmg
+          hdiutil attach Docker.dmg
+          sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license --user=$USER
 
       - name: Build containers
         run: docker compose build
