@@ -10,10 +10,18 @@ inputs:
     description: 'Git ref to checkout for helioviewer.org-docker repository'
     required: false
     default: 'main'
+  api-repo:
+    description: 'Repository to use for the api submodule (owner/repo)'
+    required: false
+    default: 'Helioviewer-Project/api'
   api-ref:
     description: 'Git ref to checkout for api submodule'
     required: false
     default: 'main'
+  helioviewer-org-repo:
+    description: 'Repository to use for the helioviewer.org submodule (owner/repo)'
+    required: false
+    default: 'Helioviewer-Project/helioviewer.org'
   helioviewer-org-ref:
     description: 'Git ref to checkout for helioviewer.org submodule'
     required: false
@@ -35,6 +43,7 @@ runs:
       working-directory: helioviewer.org-docker
       run: |
         cd api
+        git remote set-url origin https://github.com/${{ inputs.api-repo }}
         git fetch origin ${{ inputs.api-ref }}
         git checkout FETCH_HEAD
         git submodule update --init --recursive
@@ -44,6 +53,7 @@ runs:
       working-directory: helioviewer.org-docker
       run: |
         cd helioviewer.org
+        git remote set-url origin https://github.com/${{ inputs.helioviewer-org-repo }}
         git fetch origin ${{ inputs.helioviewer-org-ref }}
         git checkout FETCH_HEAD
         git submodule update --init --recursive
