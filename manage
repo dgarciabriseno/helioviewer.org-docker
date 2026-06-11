@@ -341,8 +341,8 @@ download_test_data() {
     mkdir -p "${HOST_JPEG2000_PATH}/push"
 
     # Download and extract the test data tarball
-    echo "Downloading test data tarball from https://helioviewer.org/jp2/sample.tar.gz..."
-    curl -L -o /tmp/sample.tar.gz https://helioviewer.org/jp2/sample.tar.gz
+    echo "Downloading test data tarball from https://helioviewer.org/jp2/sample.tar.gz"
+    curl --max-time 60 -v -L -o /tmp/sample.tar.gz https://helioviewer.org/jp2/sample.tar.gz
 
     echo "Extracting test data to ${HOST_JPEG2000_PATH}/push/..."
     tar -xzf /tmp/sample.tar.gz -C "${HOST_JPEG2000_PATH}/push/"
