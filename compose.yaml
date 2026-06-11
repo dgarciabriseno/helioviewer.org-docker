@@ -116,6 +116,10 @@ services:
     image: ghcr.io/helioviewer-project/coordinator
     ports:
       - ${BIND_ADDRESS}:${COORDINATOR_PORT}:80
+    healthcheck:
+      start_period: 60s
+      interval: 10s
+      retries: 15
   api:
     environment:
       HV_REDIS_HOST: ${HV_REDIS_HOST}
