@@ -2,6 +2,10 @@ name: 'Helioviewer Docker Setup'
 description: 'Setup and start Helioviewer Docker containers'
 
 inputs:
+  docker-repo:
+    description: 'Repository to checkout for helioviewer.org-docker (owner/repo)'
+    required: false
+    default: 'Helioviewer-Project/helioviewer.org-docker'
   docker-ref:
     description: 'Git ref to checkout for helioviewer.org-docker repository'
     required: false
@@ -21,7 +25,7 @@ runs:
     - name: Checkout helioviewer.org-docker repository
       uses: actions/checkout@v4
       with:
-        repository: helioviewer-project/helioviewer.org-docker
+        repository: ${{ inputs.docker-repo }}
         ref: ${{ inputs.docker-ref }}
         path: helioviewer.org-docker
         submodules: true
@@ -58,5 +62,5 @@ runs:
         && ./manage up \
         && mkdir -p data/jp2/push \
         && cp compose/*.jp2 data/jp2/push/ \
-        && ./manage downloader -d local -b local -m localmove -s \"2021-01-01 00:00:00\" -e \"2022-01-01 00:00:00\" \
+        && ./manage downloader -d local -b local -m localmove -s "2021-01-01 00:00:00" -e "2022-01-01 00:00:00" \
         && ./manage download_test_data
