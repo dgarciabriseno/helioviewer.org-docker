@@ -62,6 +62,12 @@ runs:
       shell: bash
       run: sudo apt-get update && sudo apt-get install -y expect
 
+    - name: Cache test data tarball
+      uses: actions/cache@v4
+      with:
+        path: /tmp/sample.tar.gz
+        key: helioviewer-sample-tar-v1
+
     - name: Setup environment and start containers
       shell: bash
       working-directory: helioviewer.org-docker
