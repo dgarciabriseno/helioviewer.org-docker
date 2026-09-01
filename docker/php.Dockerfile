@@ -1,6 +1,13 @@
 FROM php:8.2.30-apache
 
-ENV IMAGEMAGICK_VER=7.1.2-18
+# IMAGE_MAGICK_VERSION selects which ImageMagick major version gets compiled
+# into the image: "7" for the current ImageMagick 7.x line (ImageMagick/ImageMagick
+# repo), or "6" for the last released ImageMagick 6.x line (ImageMagick/ImageMagick6
+# repo). Used to test compatibility while migrating from v6 to v7.
+ARG IMAGE_MAGICK_VERSION=7
+ENV IMAGE_MAGICK_VERSION=${IMAGE_MAGICK_VERSION}
+ENV IMAGEMAGICK_VER_7=7.1.2-18
+ENV IMAGEMAGICK_VER_6=6.9.13-55
 ENV FFMPEG_VER=8.1
 
 # Install API dependencies
@@ -12,12 +19,19 @@ COPY api/install/kakadu/Kakadu_v6_4_1-00781N_Linux-64-bit-Compiled.tar.gz kdu.ta
 RUN <<EOF
 apt update
 apt install -y unzip libpng-dev libjpeg-dev libfreetype-dev libmariadb-dev
-curl -s --output imagemagick.zip -X GET https://codeload.github.com/ImageMagick/ImageMagick/zip/refs/tags/$IMAGEMAGICK_VER
+if [ "$IMAGE_MAGICK_VERSION" = "6" ]; then
+  IMAGEMAGICK_REPO=ImageMagick6
+  IMAGEMAGICK_VER=$IMAGEMAGICK_VER_6
+else
+  IMAGEMAGICK_REPO=ImageMagick
+  IMAGEMAGICK_VER=$IMAGEMAGICK_VER_7
+fi
+curl -s --output imagemagick.zip -X GET https://codeload.github.com/ImageMagick/$IMAGEMAGICK_REPO/zip/refs/tags/$IMAGEMAGICK_VER
 unzip imagemagick.zip
 rm imagemagick.zip
-cd ImageMagick-$IMAGEMAGICK_VER && ./configure && make -j$(nproc) && make install && ldconfig
+cd $IMAGEMAGICK_REPO-$IMAGEMAGICK_VER && ./configure && make -j$(nproc) && make install && ldconfig
 cd ..
-rm -rf ImageMagick-$IMAGEMAGICK_VER
+rm -rf $IMAGEMAGICK_REPO-$IMAGEMAGICK_VER
 curl --output ffmpeg-$FFMPEG_VER.tar.xz https://ffmpeg.org/releases/ffmpeg-$FFMPEG_VER.tar.xz
 tar xf ffmpeg-$FFMPEG_VER.tar.xz
 rm ffmpeg-$FFMPEG_VER.tar.xz

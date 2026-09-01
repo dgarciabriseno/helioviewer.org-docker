@@ -114,8 +114,14 @@ services:
   coordinator:
     restart: always
     image: ghcr.io/helioviewer-project/coordinator
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
       - ${BIND_ADDRESS}:${COORDINATOR_PORT}:80
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://127.0.0.1/health-check"]
+      interval: 2s
+      timeout: 10s
   api:
     environment:
       HV_REDIS_HOST: ${HV_REDIS_HOST}
@@ -126,7 +132,11 @@ services:
     image: ghcr.io/helioviewer-project/php
     build:
       dockerfile: docker/php.Dockerfile
+      args:
+        IMAGE_MAGICK_VERSION: ${IMAGE_MAGICK_VERSION:-6}
     user: "${UID:-1000}:${GID:-1000}"
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
       - ${BIND_ADDRESS}:${API_PORT}:80
     depends_on:
